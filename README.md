@@ -1,1 +1,1 @@
-# Smart-Home-Thesis
+# Smart-Home-Emotional-Detection-Regulation
