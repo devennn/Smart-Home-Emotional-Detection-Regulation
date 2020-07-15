@@ -7,6 +7,9 @@ from utils import Plot_Graph
 from gui_window import setup_window
 from middleware import manage_features
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
 import PySimpleGUI as sg
 sg.theme('Material2')
 sg.change_look_and_feel('Dark Blue 3')
@@ -17,20 +20,25 @@ start_time = datetime.now() # Indicating program start for summary update
 def scale(preds):
     return np.interp(preds, (preds.min(), preds.max()), (0, 500))
 
+
 def frame_to_bytes(frame):
     return cv2.imencode('.png', frame)[1].tobytes()
 
+
 def wait_thread(threads):
+    logging.debug("wait_threads")
     for t in threads: t.join()
 
+
 def stop_task(data, window):
-    print("App LIFX: Reset original color")
-    data["backend"].lifx.reset_original()
-    # Reset all threads
+    if data['backend'].lifx is not None:
+        logging.debug("stop_task: LIFX Reset original color")
+        data["backend"].lifx.reset_original()
     wait_thread(data['backend'].threads)
     data['backend'].threads = []
-    # Create White image and update window
+    # Show empty image in window
     window['image'].update(data=frame_to_bytes(np.full((240, 320), 0)))
+
 
 def main():
     g = Plot_Graph()
@@ -79,6 +87,7 @@ def main():
         elif event == 'Start':
             running = True
         elif event == 'Stop':
+            logging.debug("Stop")
             running = False
             stop_task(data, window)
         elif event == 'Real-Time':
@@ -121,6 +130,7 @@ def main():
 
             for i in range(emotion_class_len):
                 graph = g.update_value(graph, to_plot[i], i, EMOTIONS[i])
+
 
 if __name__ == '__main__':
     main()

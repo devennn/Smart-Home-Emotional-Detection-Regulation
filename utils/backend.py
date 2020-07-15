@@ -22,12 +22,18 @@ class Backend:
         self.summary = [0]*len(self.tracker)
         self.send_data_flag = False
         self.threads = []
-        self.lifx = LIFX(duration_secs=1)
+
+        try:
+            self.lifx = LIFX(duration_secs=1) # Will produce error if no LIFX connected
+        except ValueError:
+            self.lifx = None
+
 
     def update_summary(self, top_emtn):
         temp = list(self.tracker).index(top_emtn)
         self.summary[temp] += 1
         return self.summary
+
 
     def get_elapsed_time(self):
         time = int(''.join(x for x in self.time_str if x.isdigit()))
@@ -35,6 +41,7 @@ class Backend:
             time *= 60
 
         return time
+
 
     def record_label(self, label, app):
         # Update elapsed_time from time_str
@@ -54,6 +61,7 @@ class Backend:
             self.tracker[label[0]] += 1
             return self.summary
 
+
     def check_and_send(self, app, time_sec):
         print("Period(s): {}".format(time_sec))
         TOP_EMOTION = max(self.tracker, key=self.tracker.get)
@@ -64,10 +72,12 @@ class Backend:
             self.threads.append(t)
         return self.update_summary(TOP_EMOTION)
 
+
     def activate_apps_thread(self, app, TOP_EMOTION, time_sec):
         self.process_ifttt(emotion=TOP_EMOTION)
         if self.chat_id is not 0:
             send_telegram_mesg(TOP_EMOTION, self.chat_id)
+
 
     def process_ifttt(self, emotion):
         print('To IFTTT data: {}'.format(emotion))

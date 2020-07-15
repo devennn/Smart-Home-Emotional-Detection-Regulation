@@ -32,8 +32,10 @@ class Emotions:
         # Resize for display
         return cv2.resize(frame, (320, 240)), preds, label
 
+
     def sort_faces(self, faces):
         return sorted(faces, reverse=True, key=lambda x:(x[2] - x[0])*(x[3] - x[1]))
+
 
     def get_frame_data(self):
         frame = self.camera.read()[1]
@@ -42,10 +44,13 @@ class Emotions:
 
         return faces, gray, frame
 
+
     def get_face(self, gray):
         return self.face_detection.detectMultiScale(gray, scaleFactor=1.1,
                     minNeighbors=5, minSize=(30, 30),
                     flags=cv2.CASCADE_SCALE_IMAGE)
+
+
 
     def extract_roi(self, gray, face):
         """

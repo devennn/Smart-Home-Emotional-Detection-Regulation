@@ -3,7 +3,12 @@ from lifxlan import BLUE, CYAN, GREEN, LifxLAN, ORANGE, PINK, PURPLE, RED, YELLO
 
 class LIFX:
     def __init__(self, duration_secs=0.5, init_color=0):
-        self.bulb = LifxLAN().get_lights()[0] #Get bulb
+        try:
+            self.bulb = LifxLAN().get_lights()[0] #Get bulb
+        except IndexError:
+            raise ValueError("No LIFX bulb detected")
+            return
+
         self.colors = [RED, ORANGE, YELLOW, GREEN, CYAN, BLUE, PURPLE, PINK]
         self.duration_secs = duration_secs
 
@@ -12,6 +17,7 @@ class LIFX:
 
         self.original_color = self.bulb.get_color()
         self.original_power = self.bulb.get_power()
+
 
     def change_colors(self, sleep_secs=0.5, smooth=False, seq='rbw', color_index=0):
         transition_time_ms = self.duration_secs*1000 if smooth else 0
@@ -33,6 +39,7 @@ class LIFX:
         sleep(0.5) # for looks
         self.bulb.set_color(self.original_color)
 
+
 def main():
     lifx = LIFX()
     bulb = lifx.bulb
@@ -49,6 +56,7 @@ def main():
 
     print("Restoring original power and color...")
     lifx.reset_original()
+
 
 if __name__ == '__main__':
     main()

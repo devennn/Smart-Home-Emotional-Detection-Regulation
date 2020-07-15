@@ -20,10 +20,10 @@ def setup_window(graph):
                     sg.Checkbox('Fridge', size=(9,1), key='fridge', font='Helvetica 9')]]
 
     time_list = ['10 sec', '30 sec', '1 min', '5 min', '10 min'] #in seconds
-    choose_time_layout = [[sg.Text('Period'+':', justification='l', size=(5,1)),
+    choose_time_layout = [[sg.Text('Period'+':', justification='l', size=(10,1)),
                             sg.Combo(time_list, size=(10, 10), default_value=time_list[2],
                             key='time', background_color='#000000', text_color='white')],
-                            [sg.Text("Telegram"+':', justification='l', size=(7,1)),
+                            [sg.Text("Telegram"+':', justification='l', size=(10,1)),
                             sg.Input(key='chat_id', justification='l', size=(10,1),
                             background_color='#000000', text_color='white'),
                             sg.Button('Connect')]]
